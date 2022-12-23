@@ -1,0 +1,3 @@
+1. A very basic blogging application with only features of posting blogs and comment on blogs
+2. This project is just for unstnading microservices architecture. 
+3. Practices that we followed in this application are not suitable for production environment

@@ -1,0 +1,21 @@
+# NodePort Service for posts microservice
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-srv
+spec:
+  type: NodePort
+
+  # selector will tell this service to find all the pods with the label app: posts, and allow access to those pods from outside world
+  selector:
+    app: posts
+
+  ports:
+    - name: posts
+      protocol: TCP
+      # As we know, multiple services can run inside a Node(VM), this is the port to access the service from this Node(VM), this is not the port which is used to access the app from outside world. Because cluster is topmost layer in Kubernetes not Nodes
+      # Kubernetes assigns this Service an IP address (sometimes called the "cluster IP"), which is used by the Service proxies, https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+      port: 4000        
+      targetPort: 4000        # this is the actutal port our microservice app is running on inside container
+      # the final port on which we can access the app from outside can be found once you create the service.
+  

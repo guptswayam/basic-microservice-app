@@ -1,0 +1,19 @@
+# apiVersion is the version of kubernetes API. 
+# Differerent version contains different objects, like v1 contain pods, apps/v1 contains all v1 objects and some new objects like Deplyment Object
+# https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-apiversion-definition-guide.html
+apiVersion: v1
+
+# The type of object we want to create
+kind: Pod
+
+# config options for the object we want to create
+metadata:
+  name: posts   # posts will be name of pod, and will appear when you describe pod
+
+# spec specifies the exact attributes that we want to apply to a object
+spec:
+  containers:       # list of containers inside a pod
+    - name: posts   # name of container
+      image: guptswayam/basic-microservice-app/posts:0.0.1    # image to start the container from
+      # imagePullPolicy all options: https://kubernetes.io/docs/concepts/containers/images/#image-pull-policy
+      imagePullPolicy: Never      # Never means don't pull the image from docker registry, use local images, this attribute can be used in development only, default is Always

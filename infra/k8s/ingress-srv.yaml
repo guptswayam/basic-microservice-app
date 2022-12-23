@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  # Annotations allow you to use advanced NGINX features and customize/fine tune NGINX behavior for that Ingress resource.
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: basic-microservice-app.com   # this is DNS name that will route the traffic to server(ec2) running our kubernetes cluster
+      http:
+        # order matters when defining paths, the first matched path will be selected
+        paths:
+          - path: /posts/create
+            backend:
+              service: 
+                name: posts-clusterip-srv
+                port:
+                  number: 4000
+            pathType: Prefix
+
+          - path: /posts
+            backend:
+              service:
+                name: query-srv
+                port:
+                  number: 4002
+            pathType: Prefix
+          
+          - path: /posts/?(.*)/comments
+            backend:
+              service:
+                name: comments-srv
+                port:
+                  number: 4001
+            pathType: Prefix
+          
+          - path: /?(.*)      # '?(.*)' is for react-router
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000
+            pathType: Prefix

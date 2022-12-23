@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posts-depl
+spec:
+  replicas: 1     # Replicas is the no of pods we want to create for an image
+
+  selector:
+    matchLabels:      # Labels are the key-value pairs that are attached to _ where key can be anything.
+      app: posts      # app is just a label, it can be anything. But the same label must be inside template
+
+  # Inside template, we specify the pod
+  template:
+    metadata:
+      labels:
+        app: posts
+    spec:
+      containers:
+        - name: posts
+          image: guptswayam/basic-microservice-app/posts
+          imagePullPolicy: Never
+
+---     # '---' helps us create multiple objects in same file
+
+# Posts Cluster IP Service for communication b/w microservices
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-clusterip-srv
+spec:
+  selector:
+    app: posts
+  ports:
+    - name: posts
+      protocol: TCP
+      port: 4000
+      targetPort: 4000

@@ -1,0 +1,64 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl: 
+    manifests:
+      - ./infra/k8s/*
+  
+build: 
+  local:
+    push: false
+  artifacts:
+    - image: guptswayam/basic-microservice-app/client
+      context: client     # client refers the directory here. Means If any change made in the client directory, then skaffold will rebuild above client image
+      docker:
+        dockerfile: Dockerfile
+      sync:     # sync is for fast update, it won't rebuild the image and directly update the changes in pod. But in some cases like a update in package.json we want to rebuild a image
+        manual:
+          - dest: .
+            src: "src/**/*.js"      # so if any js file change in src dir, then skaffold won't rebuild the image and directly throw chnages to pod. If any other file change then skaffold rebuild the image and apply the changes
+
+    - image: guptswayam/basic-microservice-app/event-bus
+      context: event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "*.js"
+
+    - image: guptswayam/basic-microservice-app/posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "*.js"
+
+    - image: guptswayam/basic-microservice-app/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "*.js"
+    
+    - image: guptswayam/basic-microservice-app/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "*.js"
+
+    - image: guptswayam/basic-microservice-app/moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: "*.js"
